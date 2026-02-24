@@ -1,5 +1,6 @@
 class HashMap
   
+  attr_accessor :buckets
   @@buckets = 0
   
   def initialize
@@ -14,13 +15,14 @@ class HashMap
     prime_number = 31
 
     key.each_char { |char| hash_code = prime_number * hash_code + char.ord }
-
+    puts "key is: #{key}"
     hash_code
   end
 
 
   def bucket_index(key)
     index = key % @capacity
+    puts "index is: #{index}"
     index
   end
 
@@ -30,22 +32,41 @@ class HashMap
   # 'I am the new value.'. From the logic stated above, 'Carlos" should contain only the latter value').
   def set(key, value)
     index = bucket_index(hash(key))
-    @buckets[index] = Bucket.new(index).append(key, value)
+   
+    if @buckets[index] == nil
+      add_bucket(index).append(key, value)
+    end
+
+    change_value(key, value, index)
+
   end
 
   private
 
+  def add_bucket(index)
+    @buckets[index] = Bucket.new(index)
+  end
+
+  def change_value(key, value, index)
+    tmp = @buckets[index].head
+    
+    while tmp.next_node != nil && tmp.next_node.key != key
+      tmp = tmp.next_node
+    end
+    tmp.value = value if tmp.key == key
+  end
+
   class Node
-    attr_accessor :key, :value    
-    def initialize( key, value, next_key = nil)
+    attr_accessor :key, :value, :next_node
+    def initialize( key, value, next_node = nil)
       @key = key
       @value = value
-      @next_key = next_key
+      @next_node = next_node
     end
   end
 
   class Bucket # this is a linked list for when more than one node is placed in here and must be traversed.
-    attr_accessor :head, :index
+    attr_accessor :head, :index, :append
     
     def initialize(index)
       @index = index
@@ -76,6 +97,20 @@ end
 hsh = HashMap.new
 # p hsh.hash("Michael Jackson")
 p hsh.set("Michael", "Jackson")
+p hsh.set("Open", "Claw")
 p hsh
-# p hsh.bucket_index(hsh.hash("Michael"))
+p hsh.set("Michael", "Johnson")
+p hsh.set("Peter", "Steinberger")
+p hsh.set("Red", "Herring")
+p hsh.set("Arthur", "deBono")
+p hsh.set("Ariel", "Grande")
+p hsh.set("Thomas", "Schumacker")
+p hsh.set("Shenia", "Twain")
+p hsh.set("Kill", "Bill")
+p hsh.set("Renee", "Russo")
+p hsh.set("Janet", "Jackson")
+p hsh
+p hsh.buckets[7].head.value
+# p hsh.bucket_index(hash("Shenia"))
+# p hsh.bucket_index(hash("Janet"))
 
