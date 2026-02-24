@@ -48,8 +48,11 @@ class HashMap
   end
 
   def change_value(key, value, index)
-    tmp = @buckets[index].head
+    if @buckets[index].head == nil && @buckets[index].head.key == key
+      @buckets[index].head.value = value
+    end
     
+    tmp = @buckets[index].head
     while tmp.next_node != nil && tmp.next_node.key != key
       tmp = tmp.next_node
     end
