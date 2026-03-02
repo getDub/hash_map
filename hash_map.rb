@@ -19,7 +19,6 @@ class HashMap
     hash_code
   end
 
-
   def bucket_index(key)
     index = key % @capacity
     puts "index is: #{index}"
@@ -32,11 +31,12 @@ class HashMap
   # 'I am the new value.'. From the logic stated above, 'Carlos" should contain only the latter value').
   def set(key, value)
     index = bucket_index(hash(key))
-   
+    raise IndexError if index.negative? || index >= @buckets.length
+
     if @buckets[index] == nil
       add_bucket(index).append(key, value)
     end
-
+    grow_array?(@buckets)
     change_value(key, value, index)
 
   end
@@ -44,6 +44,8 @@ class HashMap
   private
 
   def add_bucket(index)
+    @@buckets += 1
+    puts "no. of buckets = #{@@buckets}"
     @buckets[index] = Bucket.new(index)
   end
 
@@ -56,7 +58,34 @@ class HashMap
     while tmp.next_node != nil && tmp.next_node.key != key
       tmp = tmp.next_node
     end
-    tmp.value = value if tmp.key == key
+    # tmp.value = value if tmp.key == key
+    if tmp.key == key
+      tmp.value = value
+    else
+      @buckets[index].append(key,value)
+    end
+  end
+
+  def array_length(bucket_array)
+    nil_count = 0
+    bucket_array.each do |nil_objects|
+      if nil_objects.nil?
+        nil_count += 1
+      end
+    end
+    length = bucket_array.length - nil_count
+  end
+
+  def grow_array?(total_buckets)
+    growth_number = @capacity * @load_factor
+    puts "growth number = #{growth_number.floor}"
+    if array_length(total_buckets) >= growth_number.floor
+      @capacity = @capacity * 2
+      puts "new capacity = #{@capacity}"
+    end
+      # @buckets.each do |node|
+        # set(node.key, node.value)
+
   end
 
   class Node
