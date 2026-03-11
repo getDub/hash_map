@@ -36,17 +36,10 @@ class HashMap
     change_value(key, value, index)
   end
 
-  # #get(key) takes one argument as a key and returns the value that is assigned to this key. 
-  # If key is not found, return nil.
-  # if buckets[index] == nil - check
-  # if buckets[index].head.key != key
-  # there is no buckets[index] @ index - that's nil check above, so dont need this
-  # if buckets[index].head.key == key
   def get(key)
     index = bucket_index(hash(key))
     if bucket_empty?(index)
       p nil
-      # return
     else key_match?(index, key)
       puts value(key, index)
     end
