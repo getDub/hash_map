@@ -15,20 +15,16 @@ class HashMap
     prime_number = 31
 
     key.each_char { |char| hash_code = prime_number * hash_code + char.ord }
-    puts "key is: #{key}"
+    # puts "key is: #{key}"
     hash_code
   end
 
   def bucket_index(key)
     index = key % @capacity
-    puts "index is: #{index}"
+    # puts "index is: #{index}"
     index
   end
 
-  # takes two arguments, the first is a key and the second is a value that is assigned to this key.
-  # If a key already exist, then the old value is overwritten or we can say update the key's value
-  # (e.g. carlos is our key but it is called twice: once with value 'I am the value'., and once with value
-  # 'I am the new value.'. From the logic stated above, 'Carlos" should contain only the latter value').
   def set(key, value)
     index = bucket_index(hash(key))
     raise IndexError if index.negative? || index >= @buckets.length
@@ -36,9 +32,24 @@ class HashMap
     if @buckets[index] == nil
       add_bucket(index).append(key, value)
     end
-    grow_array?(@buckets)
+    # grow_array?(@buckets)
     change_value(key, value, index)
+  end
 
+  # #get(key) takes one argument as a key and returns the value that is assigned to this key. 
+  # If key is not found, return nil.
+  # if buckets[index] == nil - check
+  # if buckets[index].head.key != key
+  # there is no buckets[index] @ index - that's nil check above, so dont need this
+  # if buckets[index].head.key == key
+  def get(key)
+    index = bucket_index(hash(key))
+    if bucket_empty?(index)
+      p nil
+      # return
+    else key_match?(index, key)
+      puts value(key, index)
+    end
   end
 
   private
@@ -48,6 +59,10 @@ class HashMap
     puts "no. of buckets = #{@@buckets}"
     @buckets[index] = Bucket.new(index)
   end
+
+  # def node_head
+  #   tmp = @buckets[index].head
+  # end
 
   def change_value(key, value, index)
     if @buckets[index].head == nil && @buckets[index].head.key == key
@@ -76,17 +91,50 @@ class HashMap
     length = bucket_array.length - nil_count
   end
 
-  def grow_array?(total_buckets)
-    growth_number = @capacity * @load_factor
-    puts "growth number = #{growth_number.floor}"
-    if array_length(total_buckets) >= growth_number.floor
-      @capacity = @capacity * 2
-      puts "new capacity = #{@capacity}"
-    end
-      # @buckets.each do |node|
-        # set(node.key, node.value)
-
+  def bucket_empty?(idx)
+    @buckets[idx].nil?
   end
+  
+  def key_match?(idx, key)
+    # @buckets[idx].head.key == key
+    node = @buckets[idx].head
+      while node.key != key
+        node = node.next_node
+      end
+      # node = node.value 
+      # puts "node key eql#{node.key == key}"
+      # puts "node is #{node.key}"
+      node.key == key
+  end
+
+  def value(key, idx)
+    node = @buckets[idx].head
+      while node.key != key
+        node = node.next_node
+      end
+      # puts "node val in val is #{node.value}"
+      node.value
+  end
+  # def grow_array?(total_buckets)
+  #   growth_number = @capacity * @load_factor
+  #   puts "growth number = #{growth_number.floor}"
+  #   if array_length(total_buckets) >= growth_number.floor
+  #     @capacity = @capacity * 2
+  #     puts "new capacity = #{@capacity} and buckets are now = #{@buckets.length}"
+  #     # new_array = Array.new(@capacity)
+  #     # array_copy = @buckets
+  #     # @buckets = Array.new(@capacity)
+  #     @buckets.each do |element|
+  #       if element.size > 1
+  #         tmp = element.head
+  #         while tmp.next_node != nil
+  #           tmp = tmp.next_node
+  #           self.set(tmp.key, tmp.value)
+  #         end
+  #       puts "element = #{element.head.key}" if element != nil
+  #     end        
+  #   end
+  # end
 
   class Node
     attr_accessor :key, :value, :next_node
@@ -122,6 +170,20 @@ class HashMap
       @head = Node.new(key, value, @head)
     end
 
+    def size
+      tmp = @head
+      if @head == nil
+        size_counter = 0
+      else
+       size_counter = 1
+          while tmp.next_node != nil
+            size_counter += 1
+            tmp = tmp.next_node
+          end
+      end
+      size_counter
+    end
+
   end
 
 end
@@ -132,7 +194,7 @@ p hsh.set("Michael", "Jackson")
 p hsh.set("Open", "Claw")
 p hsh
 p hsh.set("Michael", "Johnson")
-p hsh.set("Peter", "Steinberger")
+# p hsh.set("Peter", "Steinberger")
 p hsh.set("Red", "Herring")
 p hsh.set("Arthur", "deBono")
 p hsh.set("Ariel", "Grande")
@@ -141,8 +203,14 @@ p hsh.set("Shenia", "Twain")
 p hsh.set("Kill", "Bill")
 p hsh.set("Renee", "Russo")
 p hsh.set("Janet", "Jackson")
+p hsh.set("Janet", "Jackso")
+p hsh.set("Missy", "Elliot")
+p hsh.set("Lauren", "Hill")
+p hsh.set("Zaha", "Hadid")
+p hsh.set("Katherine", "Zeta Jones")
 p hsh
-p hsh.buckets[7].head.value
-# p hsh.bucket_index(hash("Shenia"))
-# p hsh.bucket_index(hash("Janet"))
-
+# p hsh.buckets[7].head.value
+# p hsh.buckets[6].size
+hsh.get("Janet")
+hsh.get("Zaha")
+hsh.get("Ronny")
