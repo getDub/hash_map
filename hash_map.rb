@@ -34,7 +34,7 @@ class HashMap
   def has?(key)
     index = bucket_index(hash(key))
     if @buckets[index].nil?
-      puts "false"
+      puts false
     else
       node = @buckets[index].head
         while node.key != key
