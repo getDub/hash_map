@@ -9,21 +9,7 @@ class HashMap
     @buckets = Array.new(@capacity)
   end
 
-  # takes a key and produces a hash code with it.
-  def hash(key)
-    hash_code = 0
-    prime_number = 31
 
-    key.each_char { |char| hash_code = prime_number * hash_code + char.ord }
-    # puts "key is: #{key}"
-    hash_code
-  end
-
-  def bucket_index(key)
-    index = key % @capacity
-    # puts "index is: #{index}"
-    index
-  end
 
   def set(key, value)
     index = bucket_index(hash(key))
@@ -40,22 +26,48 @@ class HashMap
     index = bucket_index(hash(key))
     if bucket_empty?(index)
       p nil
-    else key_match?(index, key)
+    else has?(key)
       puts value(key, index)
     end
   end
 
+  def has?(key)
+    index = bucket_index(hash(key))
+    if @buckets[index].nil?
+      puts "false"
+    else
+      node = @buckets[index].head
+        while node.key != key
+          node = node.next_node
+        end
+        has = node.key == key
+        puts "#{has}"
+      end
+  end
+
   private
+
+  # takes a key and produces a hash code with it.
+  def hash(key)
+    hash_code = 0
+    prime_number = 31
+    
+    key.each_char { |char| hash_code = prime_number * hash_code + char.ord }
+    # puts "key is: #{key}"
+    hash_code
+  end
+
+   def bucket_index(key)
+    index = key % @capacity
+    # puts "index is: #{index}"
+    index
+  end
 
   def add_bucket(index)
     @@buckets += 1
     puts "no. of buckets = #{@@buckets}"
     @buckets[index] = Bucket.new(index)
   end
-
-  # def node_head
-  #   tmp = @buckets[index].head
-  # end
 
   def change_value(key, value, index)
     if @buckets[index].head == nil && @buckets[index].head.key == key
@@ -88,18 +100,6 @@ class HashMap
     @buckets[idx].nil?
   end
   
-  def key_match?(idx, key)
-    # @buckets[idx].head.key == key
-    node = @buckets[idx].head
-      while node.key != key
-        node = node.next_node
-      end
-      # node = node.value 
-      # puts "node key eql#{node.key == key}"
-      # puts "node is #{node.key}"
-      node.key == key
-  end
-
   def value(key, idx)
     node = @buckets[idx].head
       while node.key != key
@@ -207,3 +207,7 @@ p hsh
 hsh.get("Janet")
 hsh.get("Zaha")
 hsh.get("Ronny")
+
+hsh.has?("Janet")
+hsh.has?("Zaha")
+hsh.has?("Ronny")
