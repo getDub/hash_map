@@ -18,31 +18,27 @@ class HashMap
     if @buckets[index] == nil
       add_bucket(index).append(key, value)
     end
-    # grow_array?(@buckets)
     change_value(key, value, index)
   end
 
   def get(key)
     index = bucket_index(hash(key))
-    if bucket_empty?(index)
-      p nil
-    else has?(key)
-      puts value(key, index)
-    end
-  end
+    return nil if bucket_empty?(index)
+    return nil unless has?(key)
 
+    value(key, index)
+  end
+  
   def has?(key)
     index = bucket_index(hash(key))
-    if @buckets[index].nil?
-      puts false
-    else
-      node = @buckets[index].head
-        while node.key != key
-          node = node.next_node
-        end
-        has = node.key == key
-        puts "#{has}"
-      end
+    return false if bucket_empty?(index)
+
+    node = @buckets[index].head
+    while node
+      return true if node.key == key
+      node = node.next_node
+    end
+    false
   end
 
   private
@@ -57,7 +53,7 @@ class HashMap
     hash_code
   end
 
-   def bucket_index(key)
+  def bucket_index(key)
     index = key % @capacity
     # puts "index is: #{index}"
     index
@@ -108,26 +104,6 @@ class HashMap
       # puts "node val in val is #{node.value}"
       node.value
   end
-  # def grow_array?(total_buckets)
-  #   growth_number = @capacity * @load_factor
-  #   puts "growth number = #{growth_number.floor}"
-  #   if array_length(total_buckets) >= growth_number.floor
-  #     @capacity = @capacity * 2
-  #     puts "new capacity = #{@capacity} and buckets are now = #{@buckets.length}"
-  #     # new_array = Array.new(@capacity)
-  #     # array_copy = @buckets
-  #     # @buckets = Array.new(@capacity)
-  #     @buckets.each do |element|
-  #       if element.size > 1
-  #         tmp = element.head
-  #         while tmp.next_node != nil
-  #           tmp = tmp.next_node
-  #           self.set(tmp.key, tmp.value)
-  #         end
-  #       puts "element = #{element.head.key}" if element != nil
-  #     end        
-  #   end
-  # end
 
   class Node
     attr_accessor :key, :value, :next_node
@@ -137,6 +113,7 @@ class HashMap
       @next_node = next_node
     end
   end
+
 
   class Bucket # this is a linked list for when more than one node is placed in here and must be traversed.
     attr_accessor :head, :index, :append
@@ -176,7 +153,6 @@ class HashMap
       end
       size_counter
     end
-
   end
 
 end
@@ -185,9 +161,9 @@ hsh = HashMap.new
 # p hsh.hash("Michael Jackson")
 p hsh.set("Michael", "Jackson")
 p hsh.set("Open", "Claw")
-p hsh
+# p hsh
 p hsh.set("Michael", "Johnson")
-# p hsh.set("Peter", "Steinberger")
+p hsh.set("Peter", "Steinberger")
 p hsh.set("Red", "Herring")
 p hsh.set("Arthur", "deBono")
 p hsh.set("Ariel", "Grande")
@@ -204,10 +180,10 @@ p hsh.set("Katherine", "Zeta Jones")
 p hsh
 # p hsh.buckets[7].head.value
 # p hsh.buckets[6].size
-hsh.get("Janet")
-hsh.get("Zaha")
-hsh.get("Ronny")
+p hsh.get("Janet")
+p hsh.get("Zaha")
+p hsh.get("Ronny")
 
-hsh.has?("Janet")
-hsh.has?("Zaha")
-hsh.has?("Ronny")
+p hsh.has?("Janet")
+p hsh.has?("Zaha")
+p hsh.has?("Blip")
