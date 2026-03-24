@@ -41,6 +41,30 @@ class HashMap
     false
   end
 
+  def remove(key)
+    index = bucket_index(hash(key))
+    return nil if bucket_empty?(index)
+
+    bucket = @buckets[index]
+    node = bucket.head
+    prev = nil
+
+      if node.key == key
+        bucket.head = node.next_node
+          return node.value
+      end
+
+      while node
+        if node.key == key
+          prev.next_node = node.next_node
+          return node.value
+        end
+        prev = node
+        node = node.next_node
+      end
+      nil
+  end
+
   private
 
   # takes a key and produces a hash code with it.
@@ -187,3 +211,7 @@ p hsh.get("Ronny")
 p hsh.has?("Janet")
 p hsh.has?("Zaha")
 p hsh.has?("Blip")
+
+p hsh.remove("Ariel")
+p hsh.remove("Twittie")
+p hsh.remove("Janet")
