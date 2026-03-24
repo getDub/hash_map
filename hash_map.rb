@@ -65,6 +65,16 @@ class HashMap
       nil
   end
 
+  def length
+    total = 0
+
+    @buckets.each do |bucket|
+      next if bucket.nil?
+      total += bucket.size
+    end
+    total
+  end
+
   private
 
   # takes a key and produces a hash code with it.
@@ -212,6 +222,8 @@ p hsh.has?("Janet")
 p hsh.has?("Zaha")
 p hsh.has?("Blip")
 
-p hsh.remove("Ariel")
-p hsh.remove("Twittie")
-p hsh.remove("Janet")
+# p hsh.remove("Ariel")
+# p hsh.remove("Twittie")
+# p hsh.remove("Janet")
+
+p hsh.length
