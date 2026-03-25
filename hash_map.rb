@@ -75,6 +75,11 @@ class HashMap
     total
   end
 
+  def clear
+    @buckets = Array.new(@capacity)
+    @@buckets = 0
+  end
+
   private
 
   # takes a key and produces a hash code with it.
@@ -227,3 +232,5 @@ p hsh.has?("Blip")
 # p hsh.remove("Janet")
 
 p hsh.length
+p hsh.clear
+p hsh
