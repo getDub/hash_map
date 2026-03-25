@@ -94,6 +94,22 @@ class HashMap
     array
   end
 
+  def values
+    array = []
+
+    @buckets.each do |bucket|
+      next if bucket.nil?
+
+      node = bucket.head
+      while node
+        array << node.value
+        node = node.next_node
+      end
+    end
+    array
+  end
+
+
   private
 
   # takes a key and produces a hash code with it.
@@ -248,3 +264,4 @@ p hsh.has?("Blip")
 p hsh.length
 # p hsh.clear
 p hsh.keys
+p hsh.values
