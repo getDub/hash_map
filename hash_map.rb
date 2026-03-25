@@ -80,6 +80,20 @@ class HashMap
     @@buckets = 0
   end
 
+  def keys 
+    array = []
+    @buckets.each do |bucket|
+      next if bucket.nil?
+
+      node = bucket.head
+      while node
+        array << node.key
+        node = node.next_node
+      end
+    end
+    array
+  end
+
   private
 
   # takes a key and produces a hash code with it.
@@ -232,5 +246,5 @@ p hsh.has?("Blip")
 # p hsh.remove("Janet")
 
 p hsh.length
-p hsh.clear
-p hsh
+# p hsh.clear
+p hsh.keys
