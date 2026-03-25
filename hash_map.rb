@@ -109,6 +109,23 @@ class HashMap
     array
   end
 
+  def entries
+    array = []
+    
+    @buckets.each do |bucket|
+      next if bucket.nil?
+
+      node = bucket.head
+      while node
+        pair = []
+        pair << node.key
+        pair << node.value
+        node = node.next_node
+      end
+      array << pair
+    end
+    array
+  end
 
   private
 
@@ -263,5 +280,6 @@ p hsh.has?("Blip")
 
 p hsh.length
 # p hsh.clear
-p hsh.keys
-p hsh.values
+# p hsh.keys
+# p hsh.values
+p hsh.entries
