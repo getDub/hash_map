@@ -2,6 +2,7 @@ class HashMap
   
   attr_accessor :buckets
   @@buckets = 0
+  @@nodes = 0
   
   def initialize
     @load_factor = 0.75
@@ -9,12 +10,14 @@ class HashMap
     @buckets = Array.new(@capacity)
   end
 
-
+  # def self.buckets
+  #   @@buckets
+  # end
 
   def set(key, value)
     index = bucket_index(hash(key))
     raise IndexError if index.negative? || index >= @buckets.length
-
+    
     if @buckets[index] == nil
       add_bucket(index).append(key, value)
     end
@@ -78,6 +81,7 @@ class HashMap
   def clear
     @buckets = Array.new(@capacity)
     @@buckets = 0
+    @@nodes = 0
   end
 
   def keys 
@@ -121,33 +125,30 @@ class HashMap
         pair << node.key
         pair << node.value
         node = node.next_node
+        array << pair
       end
-      array << pair
     end
     array
   end
 
   private
 
-  # takes a key and produces a hash code with it.
   def hash(key)
     hash_code = 0
     prime_number = 31
     
     key.each_char { |char| hash_code = prime_number * hash_code + char.ord }
-    # puts "key is: #{key}"
     hash_code
   end
 
   def bucket_index(key)
     index = key % @capacity
-    # puts "index is: #{index}"
     index
   end
 
   def add_bucket(index)
     @@buckets += 1
-    puts "no. of buckets = #{@@buckets}"
+    grow_buckets?
     @buckets[index] = Bucket.new(index)
   end
 
@@ -160,12 +161,12 @@ class HashMap
     while tmp.next_node != nil && tmp.next_node.key != key
       tmp = tmp.next_node
     end
-    # tmp.value = value if tmp.key == key
     if tmp.key == key
       tmp.value = value
     else
       @buckets[index].append(key,value)
     end
+    grow_buckets?
   end
 
   def array_length(bucket_array)
@@ -187,9 +188,23 @@ class HashMap
       while node.key != key
         node = node.next_node
       end
-      # puts "node val in val is #{node.value}"
       node.value
   end
+
+  def grow_buckets?
+    max_load = @capacity * @load_factor
+    no_of_entries = length
+    if no_of_entries > max_load.floor
+      @capacity = @capacity * 2
+      key_value_pairs = entries
+      clear 
+      key_value_pairs.each do |pairs|
+        key, value = pairs.first, pairs.last
+        set(key, value)          
+      end
+    end
+  end
+
 
   class Node
     attr_accessor :key, :value, :next_node
@@ -243,43 +258,62 @@ class HashMap
 
 end
 
-hsh = HashMap.new
-# p hsh.hash("Michael Jackson")
-p hsh.set("Michael", "Jackson")
-p hsh.set("Open", "Claw")
+# hsh = HashMap.new
+# p hsh.set("Michael", "Jackson")#1
+# p hsh.set("Open", "Claw")#2
+# p hsh.set("Michael", "Johnson")#3
+# p hsh.set("Peter", "Steinberger")#4
+# p hsh.set("Red", "Herring")#5
+# p hsh.set("Arthur", "deBono")#6
+# p hsh.set("Ariel", "Grande")#7
+# p hsh.set("Thomas", "Schumacker")#8
+# p hsh.set("Shenia", "Twain")#9
+# p hsh.set("Kill", "Bill")#10
+# p hsh.set("Renee", "Russo")#11
+# p hsh.set("Janet", "Jackson")#12
+# p hsh.set("Janet", "Jackso")#13
+# # p hsh.set("Missy", "Elliot")#14
+# # p hsh.set("Lauren", "Hill")#15
+# # p hsh.set("Zaha", "Hadid")#16
+# # p hsh.set("Katherine", "Zeta Jones")#17
 # p hsh
-p hsh.set("Michael", "Johnson")
-p hsh.set("Peter", "Steinberger")
-p hsh.set("Red", "Herring")
-p hsh.set("Arthur", "deBono")
-p hsh.set("Ariel", "Grande")
-p hsh.set("Thomas", "Schumacker")
-p hsh.set("Shenia", "Twain")
-p hsh.set("Kill", "Bill")
-p hsh.set("Renee", "Russo")
-p hsh.set("Janet", "Jackson")
-p hsh.set("Janet", "Jackso")
-p hsh.set("Missy", "Elliot")
-p hsh.set("Lauren", "Hill")
-p hsh.set("Zaha", "Hadid")
-p hsh.set("Katherine", "Zeta Jones")
-p hsh
 # p hsh.buckets[7].head.value
 # p hsh.buckets[6].size
-p hsh.get("Janet")
-p hsh.get("Zaha")
-p hsh.get("Ronny")
+# p hsh.get("Janet")
+# p hsh.get("Zaha")
+# p hsh.get("Ronny")
 
-p hsh.has?("Janet")
-p hsh.has?("Zaha")
-p hsh.has?("Blip")
+# p hsh.has?("Janet")
+# p hsh.has?("Zaha")
+# p hsh.has?("Blip")
 
 # p hsh.remove("Ariel")
 # p hsh.remove("Twittie")
 # p hsh.remove("Janet")
 
-p hsh.length
+# p hsh.length
 # p hsh.clear
 # p hsh.keys
 # p hsh.values
-p hsh.entries
+# p hsh.entries
+test = HashMap.new
+test.set('apple', 'red')#
+test.set('banana', 'yellow')#
+test.set('carrot', 'orange')#
+test.set('dog', 'brown')
+test.set('elephant', 'gray')#
+test.set('frog', 'green')#
+test.set('grape', 'purple')
+test.set('hat', 'black')#
+test.set('ice cream', 'white')#
+test.set('jacket', 'blue')#
+test.set('kite', 'pink')
+test.set('lion', 'golden')# this is 12 from TOP
+test.set('kite', 'purple')# replaces kite pink
+test.set('moon', 'silver')
+test.set('Julia', 'Roberts')
+test.set('Julietta', 'Dunlop')
+
+
+p "test.length = #{test.length}"
+p test
