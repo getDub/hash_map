@@ -153,18 +153,20 @@ class HashMap
   end
 
   def change_value(key, value, index)
-    if @buckets[index].head == nil && @buckets[index].head.key == key
-      @buckets[index].head.value = value
+    head = @buckets[index].head
+
+    if head.nil? && head.key.eql?(key)
+      head.value = value
     end
-    
-    tmp = @buckets[index].head
-    while tmp.next_node != nil && tmp.next_node.key != key
-      tmp = tmp.next_node
+
+    while head.next_node != nil && head.next_node.key != key
+      head = temp.next_node
     end
-    if tmp.key == key
-      tmp.value = value
+
+    if head.key.eql?(key)
+      head.value = value
     else
-      @buckets[index].append(key,value)
+      @buckets[index].append(key, value)
     end
     grow_buckets?
   end
@@ -313,6 +315,13 @@ test.set('kite', 'purple')# replaces kite pink
 test.set('moon', 'silver')
 test.set('Julia', 'Roberts')
 test.set('Julietta', 'Dunlop')
+# test.set('Julietta', 'XXXXX')
+test.set('kite', 'XXXXX')
+test.set('moon', 'XXXXX')
+test.set('lion', 'XXXXX')
+test.set('jacket', 'XXXXX')
+test.set('hat', 'XXXXX')
+
 
 
 p "test.length = #{test.length}"
