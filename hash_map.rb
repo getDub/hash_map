@@ -1,8 +1,8 @@
 class HashMap
   
-  attr_accessor :buckets
-  @@buckets = 0
-  @@nodes = 0
+  attr_reader :buckets
+  # @@buckets = 0
+  # @@nodes = 0
   
   def initialize
     @load_factor = 0.75
@@ -10,18 +10,20 @@ class HashMap
     @buckets = Array.new(@capacity)
   end
 
-  # def self.buckets
-  #   @@buckets
-  # end
-
   def set(key, value)
     index = bucket_index(hash(key))
     raise IndexError if index.negative? || index >= @buckets.length
     
-    if @buckets[index] == nil
-      add_bucket(index).append(key, value)
+    if @buckets[index].nil? || @buckets[index].eql?(false)
+      @buckets[index] = Bucket.new(index)
     end
-    change_value(key, value, index)
+
+    return value if update_value?(key, value, index)
+
+    @buckets[index].append(key, value)
+
+    grow_buckets_if_needed
+    value
   end
 
   def get(key)
@@ -115,7 +117,6 @@ class HashMap
 
   def entries
     array = []
-    
     @buckets.each do |bucket|
       next if bucket.nil?
 
@@ -130,9 +131,9 @@ class HashMap
     end
     array
   end
-
+  
   private
-
+  
   def hash(key)
     hash_code = 0
     prime_number = 31
@@ -140,11 +141,12 @@ class HashMap
     key.each_char { |char| hash_code = prime_number * hash_code + char.ord }
     hash_code
   end
-
+  
   def bucket_index(key)
     index = key % @capacity
     index
   end
+    
 
   def add_bucket(index)
     @@buckets += 1
@@ -152,25 +154,19 @@ class HashMap
     @buckets[index] = Bucket.new(index)
   end
 
-  def change_value(key, value, index)
-    head = @buckets[index].head
+  def update_value?(key, value, index)
+    node = @buckets[index].head
 
-    if head.nil? && head.key.eql?(key)
-      head.value = value
+    while node
+      if node.key.eql?(key)
+        node.value = value
+        return true
+      end
+      node = node.next_node
     end
-
-    while head.next_node != nil && head.next_node.key != key
-      head = temp.next_node
-    end
-
-    if head.key.eql?(key)
-      head.value = value
-    else
-      @buckets[index].append(key, value)
-    end
-    grow_buckets?
+    false
   end
-
+  
   def array_length(bucket_array)
     nil_count = 0
     bucket_array.each do |nil_objects|
@@ -193,7 +189,7 @@ class HashMap
       node.value
   end
 
-  def grow_buckets?
+  def grow_buckets_if_needed
     max_load = @capacity * @load_factor
     no_of_entries = length
     if no_of_entries > max_load.floor
@@ -299,28 +295,28 @@ end
 # p hsh.values
 # p hsh.entries
 test = HashMap.new
-test.set('apple', 'red')#
-test.set('banana', 'yellow')#
-test.set('carrot', 'orange')#
-test.set('dog', 'brown')
-test.set('elephant', 'gray')#
-test.set('frog', 'green')#
-test.set('grape', 'purple')
-test.set('hat', 'black')#
-test.set('ice cream', 'white')#
-test.set('jacket', 'blue')#
-test.set('kite', 'pink')
-test.set('lion', 'golden')# this is 12 from TOP
-test.set('kite', 'purple')# replaces kite pink
-test.set('moon', 'silver')
-test.set('Julia', 'Roberts')
-test.set('Julietta', 'Dunlop')
-# test.set('Julietta', 'XXXXX')
-test.set('kite', 'XXXXX')
-test.set('moon', 'XXXXX')
-test.set('lion', 'XXXXX')
-test.set('jacket', 'XXXXX')
-test.set('hat', 'XXXXX')
+test.set('apple', 'red')#1
+test.set('banana', 'yellow')#2
+test.set('carrot', 'orange')#3
+test.set('dog', 'brown')#4
+test.set('elephant', 'gray')#5
+test.set('frog', 'green')#6
+test.set('grape', 'purple')#7
+test.set('hat', 'black')#8
+test.set('ice cream', 'white')#9
+test.set('jacket', 'blue')#10
+test.set('kite', 'pink')#11
+test.set('lion', 'golden')#12 this is 12 from TOP
+test.set('kite', 'purple')#12 replaces kite pink
+test.set('moon', 'silver')#13
+test.set('Julia', 'Roberts')#14
+test.set('Julietta', 'Dunlop')#15
+test.set('Julietta', 'XXXXX')#16 doesn't replace value
+test.set('kite', 'XXXXX')# replaces value
+test.set('moon', 'XXXXX')# replaces value
+test.set('lion', 'XXXXX')# 17 doesn't replace value
+test.set('jacket', 'XXXXX')# replaces value
+test.set('hat', 'XXXXX')# replaces value
 
 
 
