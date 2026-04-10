@@ -14,22 +14,22 @@ class HashMap
     index = bucket_index(hash(key))
     raise IndexError if index.negative? || index >= @buckets.length
     
-    if @buckets[index].nil? || @buckets[index].eql?(false)
-      @buckets[index] = Bucket.new(index)
-    end
-
+    add_new_bucket_if_falsy(index)
+    
     return value if update_value?(key, value, index)
-
+    
     @buckets[index].append(key, value)
-
+    
     grow_buckets_if_needed
     value
   end
-
+  
   def get(key)
     index = bucket_index(hash(key))
+    raise IndexError if index.negative? || index >= @buckets.length
+
     return nil if bucket_empty?(index)
-    return nil unless has?(key)
+    # return nil unless has?(key)
 
     value(key, index)
   end
@@ -147,6 +147,11 @@ class HashMap
     index
   end
     
+  def add_new_bucket_if_falsy(at_idx)
+    if @buckets[at_idx].nil? || @buckets[at_idx].eql?(false)
+      @buckets[at_idx] = Bucket.new(at_idx)
+    end
+  end
 
   def add_bucket(index)
     @@buckets += 1
@@ -322,3 +327,6 @@ test.set('hat', 'XXXXX')# replaces value
 
 p "test.length = #{test.length}"
 p test
+
+p test.get('ralph')
+p test.get('Julietta')
