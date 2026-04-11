@@ -29,7 +29,7 @@ class HashMap
     raise IndexError if index.negative? || index >= @buckets.length
 
     return nil if bucket_empty?(index)
-    # return nil unless has?(key)
+    return nil unless has?(key)
 
     value(key, index)
   end
@@ -71,13 +71,7 @@ class HashMap
   end
 
   def length
-    total = 0
-
-    @buckets.each do |bucket|
-      next if bucket.nil?
-      total += bucket.size
-    end
-    total
+    @buckets.sum { |bucket| bucket&.size.to_i }
   end
 
   def clear
@@ -330,3 +324,4 @@ p test
 
 p test.get('ralph')
 p test.get('Julietta')
+p test.length
