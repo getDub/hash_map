@@ -76,22 +76,10 @@ class HashMap
 
   def clear
     @buckets = Array.new(@capacity)
-    @@buckets = 0
-    @@nodes = 0
   end
 
   def keys 
-    array = []
-    @buckets.each do |bucket|
-      next if bucket.nil?
-
-      node = bucket.head
-      while node
-        array << node.key
-        node = node.next_node
-      end
-    end
-    array
+    entries.map {|entry| entry.first}
   end
 
   def values
@@ -325,3 +313,6 @@ p test
 p test.get('ralph')
 p test.get('Julietta')
 p test.length
+
+p test.entries
+p test.keys
