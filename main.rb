@@ -20,22 +20,22 @@ test.set('kite', 'purple')#12 replaces kite pink
 test.set('moon', 'silver')#13
 test.set('Julia', 'Roberts')#14
 test.set('Julietta', 'Dunlop')#15
-test.set('Julietta', 'XXXXX')#16 doesn't replace value
-test.set('kite', 'XXXXX')# replaces value
-test.set('moon', 'XXXXX')# replaces value
-test.set('lion', 'XXXXX')# 17 doesn't replace value
-test.set('jacket', 'XXXXX')# replaces value
-test.set('hat', 'XXXXX')# replaces value
+test.set('Julietta', 'Pulietta')#16 doesn't replace value
+test.set('kite', 'has flown away')# replaces value
+test.set('moon', 'river')# replaces value
+test.set('lion', 'with a big main')# 17 doesn't replace value
+test.set('jacket', 'ooh so comfy')# replaces value
+test.set('hat', 'rat-a-tat-tat')# replaces value
 
 
-
-p "test.length = #{test.length}"
-p test
-
-p test.get('ralph')
+p test.get("ralph")
 p test.get('Julietta')
+p test.get('grape')
+p test.remove("hat")
 p test.length
-
-p test.entries
 p test.keys
 p test.values
+
+
+p test.entries
+# p test.clear
